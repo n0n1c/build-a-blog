@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<a href="/blog">Recent Posts</a>
+
+<br><br>
+
+<form method="post" action="/blog">
+    <label>
+        <div>title</div>
+        <input type="text" name="title" value="{{title}}">
+    </label>
+    <br>
+    <label>
+        <div>blog</div>
+        <textarea name="blogpost" rows="20" cols="70">{{blog}}</textarea>
+    </label>
+    <br>
+    <input type="submit">
+    <br>
+    <br>
+    <br>
+    <div class="error">{{error}}</div>
+</form>
+
+<hr>
+
+{% endblock %}

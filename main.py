@@ -21,8 +21,8 @@ import jinja2
 from google.appengine.ext import db
 
 template_dir = os.path.join(os.path.dirname(__file__), 'templates')
-jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir),
-                                autoescape = True)
+jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir), autoescape = True)
+
 class Handler(webapp2.RequestHandler):
     def write(self, *a, **kw):
         self.response.out.write(*a, **kw)
@@ -41,7 +41,7 @@ class Blog(db.Model):
 
 class MainPage(Handler):
     def get(self):
-        self.render("homepage.html")
+        self.render("newpost.html")
 
 class BlogPage(Handler):
     def get(self):
@@ -49,7 +49,8 @@ class BlogPage(Handler):
         blog = self.request.get("blogpost")
         blogs = db.GqlQuery("SELECT * FROM Blog ORDER BY posted DESC LIMIT 5")
 
-        self.render("blogpost.html", title=title, blog=blog, blogs=blogs)
+
+        self.render("mainblog.html", title=title, blog=blog, blogs=blogs)
 
     def post(self):
         title = self.request.get("title")
@@ -61,11 +62,11 @@ class BlogPage(Handler):
             b.put()
             post_id = b.key().id()
 
-            self.redirect("/blog/" + str(post_id))
+            self.redirect("/blog")
 
         else:
-            error = "You need to have a title and a blogpost!"
-            self.render("homepage.html", title=title, blog=blog, error=error)
+            error = "You need to have a title and some content!"
+            self.render("newpost.html", title=title, blog=blog, error=error)
 
 class ViewPostHandler(Handler):
     def get(self, id):
@@ -75,8 +76,10 @@ class ViewPostHandler(Handler):
             self.render("singlepost.html", blog_id=blog_id)
 
         else:
-            error = "It looks like that blog doesn't exist. YET..."
-            self.render("homepage.html", error=error)
+            error = "It looks like that blog doesn't exist."
+            self.render("newpost.html", error=error)
+
+
 
 app = webapp2.WSGIApplication([
     ('/', MainPage),
